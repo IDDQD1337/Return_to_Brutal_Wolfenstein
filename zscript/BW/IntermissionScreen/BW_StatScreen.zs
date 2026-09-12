@@ -345,6 +345,7 @@ class wolfStatus : DoomStatusScreen
 			cnt_time = Thinker.Tics2Seconds(Plrs[me].stime);
 			cnt_par = Thinker.Tics2Seconds(wbs.partime);
 			cnt_total_time = Thinker.Tics2Seconds(wbs.totaltime);
+			playerScore = Players[consoleplayer].mo.score;
 		}
 
 		if (sp_state == 2)
@@ -428,6 +429,7 @@ class wolfStatus : DoomStatusScreen
 			{
 				if(muggen)
 					muggen.setend();
+				playerScore = Players[consoleplayer].mo.score;
 				PlaySound("intermission/nextstage");
 				sp_state++;
 			}
