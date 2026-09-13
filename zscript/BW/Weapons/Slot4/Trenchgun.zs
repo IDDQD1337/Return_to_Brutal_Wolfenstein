@@ -91,7 +91,7 @@ class BW_Trenchgun : BaseBWWeapon
 		TNT1 A 0 A_jumpif(invoker.ammo2.amount < 1,"Ready_NoAmmo");
 		BTGU E 1 {
 			BW_GunBarrelSmoke(ofsPos:(28,0,-6));
-			BW_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
+			return BW_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
 		}
 		loop;
 	
@@ -99,7 +99,7 @@ class BW_Trenchgun : BaseBWWeapon
 		TNT1 A 0 A_jumpif(invoker.ammo2.amount > 0,"Ready");
 		BTGF H 1 {
 			BW_GunBarrelSmoke(ofsPos:(28,0,-6));
-			BW_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
+			return BW_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
 		}
 		loop;
 
@@ -112,9 +112,13 @@ class BW_Trenchgun : BaseBWWeapon
 		TNT1 A 0 A_ZoomFactor(1.0);
 		BTGF DE 1;
 		BTGF F 1;
-		BTGF G 1;
+		BTGF G 1 BW_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
 		TNT1 A 0 A_jumpif(invoker.ammo2.amount < 1,"Ready_NoAmmo");
-		BTGF H 1 A_ReFire("SlamPump");
+		BTGF H 1 
+		{
+			A_ReFire("SlamPump");
+			BW_WeaponReady(WRF_NOFIRE|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
+		}
 	Pump:
 		TNT1 A 0 A_StartSound("Generic/Cloth/Medium", CHAN_AUTO, CHANF_OVERLAP, 1);
 		BTGH BC 1;
@@ -335,6 +339,25 @@ class BW_Trenchgun : BaseBWWeapon
 		BTGM AB 1 bright;
 		stop;
 	
+	LowerGun:
+		BTGK ABCDEFGH 1 {
+			A_WeaponReady(WRF_ALLOWRELOAD);
+			return BW_JumpifBlockedGun("raisegun",0,true);
+		}
+	LowerGunLoop:
+		BTGK H 1 {
+			A_WeaponReady(WRF_ALLOWRELOAD);
+			return BW_JumpifBlockedGun("RaiseGun",0,true);
+		}
+		loop;
+	RaiseGun:
+		BTGK HGFEDCBA 1 {
+			A_WeaponReady(WRF_ALLOWRELOAD);
+			return BW_JumpifBlockedGun("LowerGun",0,false);
+		}
+		goto ready;
+
+
 	}
 }
 

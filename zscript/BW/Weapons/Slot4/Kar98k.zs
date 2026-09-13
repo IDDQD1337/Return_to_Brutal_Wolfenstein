@@ -110,7 +110,7 @@ Class BW_Kar98K : BaseBWWeapon
 		K98F C 1 bright;
 		TNT1 A 0 A_ZoomFactor(1.0);
 		K98F DEF 1;
-		K98F GHI 1;
+		K98F GHI 1 BW_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
 		//K98F A 1;
 	Bolt:
 		TNT1 A 0 A_StartSound("Generic/Cloth/Short", CHAN_AUTO, CHANF_OVERLAP, 1);
@@ -296,6 +296,24 @@ Class BW_Kar98K : BaseBWWeapon
 	SlideFlashEnd:
 		TNT1 A 0 A_StartSound("Generic/Cloth/short", CHAN_AUTO, CHANF_OVERLAP, 1);
 		K98K FEDCBA 1;
+		goto ready;
+	
+	LowerGun:
+		K98K ABCDEFG 1 {
+			A_WeaponReady(WRF_ALLOWRELOAD);
+			return BW_JumpifBlockedGun("raisegun",0,true);
+		}
+	LowerGunLoop:
+		K98K G 1 {
+			A_WeaponReady(WRF_ALLOWRELOAD);
+			return BW_JumpifBlockedGun("RaiseGun",0,true);
+		}
+		loop;
+	RaiseGun:
+		K98K GFEDCBA 1 {
+			A_WeaponReady(WRF_ALLOWRELOAD);
+			return BW_JumpifBlockedGun("LowerGun",0,false);
+		}
 		goto ready;
 	}
 }
